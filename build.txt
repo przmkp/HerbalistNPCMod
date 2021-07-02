@@ -1,0 +1,3 @@
+displayName = Herbalist NPC
+author = przmkp
+version = 0.1
