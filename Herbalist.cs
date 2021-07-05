@@ -2,6 +2,7 @@ using Terraria.ModLoader;
 using Terraria;
 using Terraria.ID;
 using Terraria.Utilities;
+using Terraria.Localization;
 
 namespace Herbalist
 {
@@ -64,38 +65,68 @@ namespace Herbalist
 
 		public override string TownNPCName()
 		{
-			switch (WorldGen.genRand.Next(4))
-			{
-				case 0:
-					return "Nobody";
-				case 1:
-					return "Somebody";
-				case 2:
-					return "Noone";
-				default:
-					return "Someone";
-			}
+			string[] names = { "Zdisek", "Miroslav", "Krzesimir", "Belos", "Milo", "Luborek", "Stanek", "Vacek", "Dragutin", "Stanimir", "Vojmil" };
+			return names[WorldGen.genRand.Next(names.Length)];
 		}
 
 		public override string GetChat()
 		{
 			WeightedRandom<string> chat = new WeightedRandom<string>();
-			int partyGirl = NPC.FindFirstNPC(NPCID.PartyGirl);
-			if (partyGirl >= 0 && Main.rand.NextBool(4))
+			int pirate = NPC.FindFirstNPC(NPCID.Pirate);
+			//int zoologist = NPC.FindFirstNPC(NPCID.Zoologist);
+			int dryad = NPC.FindFirstNPC(NPCID.Dryad);
+			int demolitionist = NPC.FindFirstNPC(NPCID.Demolitionist);
+			int wizard = NPC.FindFirstNPC(NPCID.Wizard);
+			int angler = NPC.FindFirstNPC(NPCID.Angler);
+
+			if (pirate >= 0)
 			{
-				chat.Add("Can you please tell " + Main.npc[partyGirl].GivenName + " to stop decorating my house with colors?");
+				chat.Add($"Do not give any Blinkroot to {Main.npc[pirate].GivenName}, he uses it to make this awful drink...");
 			}
-			chat.Add("Sometimes I feel like I'm different from everyone else here.");
-			chat.Add("What's your favorite color? My favorite colors are white and black.");
-			chat.Add("What? I don't have any arms or legs? Oh, don't be ridiculous!");
-			chat.Add("This message has a weight of 5, meaning it appears 5 times more often.", 5.0);
-			chat.Add("This message has a weight of 0.1, meaning it appears 10 times as rare.", 0.1);
+            //if (zoologist >= 0)
+            //{
+            //    chat.Add($"I found a correlation between blooming of the Deathweed and {Main.npc[zoologist].GivenName}'s transformations.");
+            //}
+			if (dryad >= 0)
+            {
+				chat.Add($"Maybe a Deathweed wasn't the best gift for {Main.npc[dryad].GivenName}...");
+			}
+			if (demolitionist >= 0)
+			{
+				chat.Add($"{Main.npc[demolitionist].GivenName} told me he had used my precious Fireblossom to make a bomb! What a waste!");
+			}
+			if (wizard >= 0)
+			{
+				chat.Add($"So I showed {Main.npc[wizard].GivenName} a Moonglow and he said that it is full of magic potential. Whatever that means.");
+			}
+			if (angler >= 0)
+			{
+				chat.Add($"It seems to me that {Main.npc[angler].GivenName} is allergic to Waterleafs...");
+			}
+			chat.Add("Yesterday I found this cave full of Blinkroot... Nevermind, it's empty now.", 0.3);
+			chat.Add("Did you know that Blinkroot grows fastest in total darkness?");
+			chat.Add("Dayblooms are so cute, even monsters want to collect them!");
+			chat.Add("Did you know that Dayblooms grow during the daytime? Fascinating!");
+			chat.Add("Deathweed blooms during a Blood Moon or a Full Moon at night.");
+			chat.Add("Don't even try to eat Deathweed. The name tells why.", 0.1);
+			chat.Add("Fireblossoms will bloom when the sun is setting, unless it is raining.");
+			chat.Add("Did you know that Fireblossoms are immune to lava? Fascinating!");
+			chat.Add("How to find a blooming Fireblossom? It will shoot a stream of sparks into the air.");
+			chat.Add("Did you know that Moonglow only blooms at night? Fascinating!");
+			chat.Add("No, that's not a Snowdrop, it's a Moonglow.");
+			chat.Add("Did you know that Shiverthorn grows naturally on snow and ice? Fascinating!");
+			chat.Add("Last night I had a dream about leaving this place and starting a Shiverthorn farm somewhere cold.", 0.2);
+			chat.Add("The Shiverthorn will usually bloom after... some time.");
+			chat.Add("Did you know that Waterleaf grows on sand? Not really fascinating.");
+			chat.Add("Waterleafs somehow know when the water is falling from the sky.", 0.4);
+			chat.Add("Waterleaf will never spawn naturally in the Ocean biome.");
+			chat.Add("Be patient. The Waterleaf takes the longest to bloom out of all the herbs.");
 			return chat.Get();
 		}
 
 		public override void SetChatButtons(ref string button, ref string button2)
 		{
-			button = "Shop";
+			button = Language.GetTextValue("LegacyInterface.28");
 		}
 
 		public override void OnChatButtonClicked(bool firstButton, ref bool shop)
