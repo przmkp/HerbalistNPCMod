@@ -4,16 +4,16 @@ using Terraria.ID;
 using Terraria.Utilities;
 using Terraria.Localization;
 
-namespace Herbalist
+namespace HerbalistNPC
 {
-	public class Herbalist : Mod
+	public class HerbalistNPC : Mod
 	{
 	}
 
 	[AutoloadHead]
-	public class HerbalistNPC : ModNPC
+	public class Herbalist : ModNPC
 	{
-		public override string Texture => "Herbalist/Herbalist";
+		public override string Texture => "HerbalistNPC/HerbalistNPC";
 		public override bool Autoload(ref string name)
 		{
 			name = "Herbalist";
