@@ -203,13 +203,13 @@ namespace Herbalist
 
 		public override void TownNPCAttackStrength(ref int damage, ref float knockback)
 		{
-			damage = 30;
+			damage = 10;
 			knockback = 4f;
 		}
 
 		public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown)
 		{
-			cooldown = 10;
+			cooldown = 20;
 			randExtraCooldown = 30;
 		}
 

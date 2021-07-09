@@ -1,1 +1,5 @@
-Herbalist NPC is a pretty cool mod, it does...this. Modify this file with a description of your mod.
+Herbalist NPC adds an NPC that sells all herbs with their corresponding seeds and mushrooms.
+
+NPC spawns after KIng Slime has been defeated.
+
+Credits to Jungliana for the sprite and dialogues.
