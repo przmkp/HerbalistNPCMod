@@ -2,6 +2,7 @@ using Terraria.ModLoader;
 using Terraria;
 using Terraria.ID;
 using Terraria.Utilities;
+using Terraria.GameContent.Bestiary;
 using Terraria.Localization;
 
 namespace HerbalistNPC
@@ -14,38 +15,54 @@ namespace HerbalistNPC
 	public class Herbalist : ModNPC
 	{
 		public override string Texture => "HerbalistNPC/HerbalistNPC";
-		public override bool Autoload(ref string name)
-		{
-			name = "Herbalist";
-			return mod.Properties.Autoload;
-		}
+		//public override bool Autoload(ref string name)
+		//{
+		//	name = "Herbalist";
+		//	return mod.Properties.Autoload;
+		//}
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Herbalist");
-			Main.npcFrameCount[npc.type] = 25;
-			NPCID.Sets.ExtraFramesCount[npc.type] = 9;
-			NPCID.Sets.AttackFrameCount[npc.type] = 4;
-			NPCID.Sets.DangerDetectRange[npc.type] = 700;
-			NPCID.Sets.AttackType[npc.type] = 0;
-			NPCID.Sets.AttackTime[npc.type] = 90;
-			NPCID.Sets.AttackAverageChance[npc.type] = 30;
-			NPCID.Sets.HatOffsetY[npc.type] = 4;
+			Main.npcFrameCount[Type] = 25;
+			NPCID.Sets.ExtraFramesCount[Type] = 9;
+			NPCID.Sets.AttackFrameCount[Type] = 4;
+			NPCID.Sets.DangerDetectRange[Type] = 700;
+			NPCID.Sets.AttackType[Type] = 0;
+			NPCID.Sets.AttackTime[Type] = 90;
+			NPCID.Sets.AttackAverageChance[Type] = 30;
+			NPCID.Sets.HatOffsetY[Type] = 4;
+
+			NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+			{
+				Velocity = 1f,
+				Direction = 1
+			};
+
+			NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 		}
 
 		public override void SetDefaults()
 		{
-			npc.townNPC = true;
-			npc.friendly = true;
-			npc.width = 18;
-			npc.height = 40;
-			npc.aiStyle = 7;
-			npc.damage = 10;
-			npc.defense = 15;
-			npc.lifeMax = 250;
-			npc.HitSound = SoundID.NPCHit1;
-			npc.DeathSound = SoundID.NPCDeath1;
-			npc.knockBackResist = 0.5f;
-			animationType = NPCID.Guide;
+			NPC.townNPC = true;
+			NPC.friendly = true;
+			NPC.width = 18;
+			NPC.height = 40;
+			NPC.aiStyle = 7;
+			NPC.damage = 10;
+			NPC.defense = 15;
+			NPC.lifeMax = 250;
+			NPC.HitSound = SoundID.NPCHit1;
+			NPC.DeathSound = SoundID.NPCDeath1;
+			NPC.knockBackResist = 0.5f;
+			AnimationType = NPCID.Guide;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
+				new FlavorTextBestiaryInfoElement("Herbalist is an expert on everything plant-related.")
+			});
 		}
 
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
@@ -73,7 +90,7 @@ namespace HerbalistNPC
 		{
 			WeightedRandom<string> chat = new WeightedRandom<string>();
 			int pirate = NPC.FindFirstNPC(NPCID.Pirate);
-			//int zoologist = NPC.FindFirstNPC(NPCID.Zoologist);
+			int bestiaryGirl = NPC.FindFirstNPC(NPCID.BestiaryGirl);
 			int dryad = NPC.FindFirstNPC(NPCID.Dryad);
 			int demolitionist = NPC.FindFirstNPC(NPCID.Demolitionist);
 			int wizard = NPC.FindFirstNPC(NPCID.Wizard);
@@ -83,11 +100,11 @@ namespace HerbalistNPC
 			{
 				chat.Add($"Do not give any Blinkroot to {Main.npc[pirate].GivenName}, he uses it to make this awful drink...");
 			}
-            //if (zoologist >= 0)
-            //{
-            //    chat.Add($"I found a correlation between blooming of the Deathweed and {Main.npc[zoologist].GivenName}'s transformations.");
-            //}
-			if (dryad >= 0)
+            if (bestiaryGirl >= 0)
+            {
+                chat.Add($"I found a correlation between blooming of the Deathweed and {Main.npc[bestiaryGirl].GivenName}'s transformations.");
+            }
+            if (dryad >= 0)
             {
 				chat.Add($"Maybe a Deathweed wasn't the best gift for {Main.npc[dryad].GivenName}...");
 			}
