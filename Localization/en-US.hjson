@@ -1,0 +1,62 @@
+﻿Mods: {
+	HerbalistNPC: {
+		
+		NPCName: {
+			Herbalist: Herbalist
+		}
+		
+		Bestiary: {
+			Herbalist: An expert in finding herbs in the world of Terraria.
+		}
+		
+		#This is what displays during all of an NPC's happiness levels. Note that the localization key for these should always be "TownNPCMood.*NPCName*.*Mood*" or else it won't display properly.
+		TownNPCMood: {
+			Herbalist: {
+				Content: I have all I need here.
+				NoHome: You know what would be great? A large-scale plantation. Oh, and maybe a bed under a roof. Or at least a table with a chair.
+				LoveSpace: This place is great! A lot of space for my plantation. Maybe I should buy a new pot or two?
+				FarFromHome: Could you please get me back to my plantation? Dayblooms dry if I don't talk to them twice a day.
+				DislikeCrowded: All these people... You know, they don't treat my plants well. I need more space!
+				HateCrowded: Could you please chase all these people away? They are trampling on my precious plants!
+				LikeBiome: "Ah, yes, {BiomeName}. Everything grows nicely here."
+				LoveBiome: "I love {BiomeName}. The climate, lush vegetation, even something... blooming and bossy underground. "
+				DislikeBiome: "Do you really think I can start a plantation in {BiomeName}? Too hot, only Waterleaf would grow here."
+				HateBiome: "It's kind of hard to contemplate the nature while being this deep in {BiomeName}. I'm not even starting about my plantation."
+				LikeNPC: "I like that {NPCName} sometimes comes to help me with my plantation."
+				LoveNPC: "I love to exchange plant trivia with {NPCName}!"
+				DislikeNPC: "{NPCName} is too loud. My plants are scared of her."
+				HateNPC: "{NPCName}, this metal guy is really creepy. And he doesn't know anything about herbs."
+			}
+		}
+		
+		#This is used to display the NPC's dialogues.
+		Dialogue: {
+			Herbalist: {
+				BlinkrootDialogue1 : "Yesterday I found this cave full of Blinkroot... Nevermind, it's empty now."
+				BlinkrootDialogue2 : "Did you know that Blinkroot grows fastest in total darkness?"
+				DaybloomDialogue1 : "Dayblooms are so cute, even monsters want to collect them!"
+				DaybloomDialogue2 : "Did you know that Dayblooms grow during the daytime? Fascinating!"
+				DeathweedDialogue1 : "Deathweed blooms during a Blood Moon or a Full Moon at night."
+				DeathweedDialogue2 : "Don't even try to eat Deathweed. The name tells why."
+				FireblossomDialogue1 : "Fireblossoms will bloom when the sun is setting, unless it is raining."
+				FireblossomDialogue2 : "Did you know that Fireblossoms are immune to lava? Fascinating!"
+				FireblossomDialogue3 : "How to find a blooming Fireblossom? It will shoot a stream of sparks into the air."
+				MoonglowDialogue1 : "Did you know that Moonglow only blooms at night? Fascinating!"
+				MoonglowDialogue2 : "No, that's not a Snowdrop, it's a Moonglow."
+				ShiverthornDialogue1 : "Did you know that Shiverthorn grows naturally on snow and ice? Fascinating!"
+				ShiverthornDialogue2 : "Last night I had a dream about leaving this place and starting a Shiverthorn farm somewhere cold."
+				ShiverthornDialogue3 : "The Shiverthorn will usually bloom after... some time."
+				WaterleafDialogue1 : "Did you know that Waterleaf grows on sand? Not really fascinating."
+				WaterleafDialogue2 : "Waterleafs somehow know when the water is falling from the sky."
+				WaterleafDialogue3 : "Waterleaf will never spawn naturally in the Ocean biome."
+				WaterleafDialogue4 : "Be patient. The Waterleaf takes the longest to bloom out of all the herbs."
+				PirateDialogue : "Do not give any Blinkroot to {0}, he uses it to make this awful drink..."
+				ZoologistDialogue : "I found a correlation between blooming of the Deathweed and {0}'s transformations."
+				DryadDialogue : "Maybe a Deathweed wasn't the best gift for {0}..."
+				DemolitionistDialogue : "{0} told me he had used my precious Fireblossom to make a bomb! What a waste!"
+				WizardDialogue : "So I showed {0} a Moonglow and he said that it is full of magic potential. Whatever that means."
+				AnglerDialogue : "It seems to me that {0} is allergic to Waterleafs..."
+			}
+		}
+	}
+}

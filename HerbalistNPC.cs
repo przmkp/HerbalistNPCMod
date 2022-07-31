@@ -1,8 +1,15 @@
+using System.Collections.Generic;
 using Terraria.ModLoader;
 using Terraria;
 using Terraria.ID;
 using Terraria.Utilities;
 using Terraria.Localization;
+using Terraria.GameContent.Personalities;
+using Terraria.GameContent.Bestiary;
+using Terraria.GameContent;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+
 
 namespace HerbalistNPC
 {
@@ -13,39 +20,57 @@ namespace HerbalistNPC
 	[AutoloadHead]
 	public class Herbalist : ModNPC
 	{
-		public override string Texture => "HerbalistNPC/HerbalistNPC";
-		public override bool Autoload(ref string name)
-		{
-			name = "Herbalist";
-			return mod.Properties.Autoload;
-		}
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Herbalist");
-			Main.npcFrameCount[npc.type] = 25;
-			NPCID.Sets.ExtraFramesCount[npc.type] = 9;
-			NPCID.Sets.AttackFrameCount[npc.type] = 4;
-			NPCID.Sets.DangerDetectRange[npc.type] = 700;
-			NPCID.Sets.AttackType[npc.type] = 0;
-			NPCID.Sets.AttackTime[npc.type] = 90;
-			NPCID.Sets.AttackAverageChance[npc.type] = 30;
-			NPCID.Sets.HatOffsetY[npc.type] = 4;
+			Main.npcFrameCount[NPC.type] = 25;
+			NPCID.Sets.ExtraFramesCount[NPC.type] = 9;
+			NPCID.Sets.AttackFrameCount[NPC.type] = 4;
+			NPCID.Sets.DangerDetectRange[NPC.type] = 700;
+			NPCID.Sets.AttackType[NPC.type] = 0;
+			NPCID.Sets.AttackTime[NPC.type] = 90;
+			NPCID.Sets.AttackAverageChance[NPC.type] = 30;
+			NPCID.Sets.HatOffsetY[NPC.type] = 4;
+
+			NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+			{
+				Velocity = 1f,
+				Direction = 1
+			};
+
+			NPC.Happiness
+				.SetBiomeAffection<ForestBiome>(AffectionLevel.Like)
+				.SetBiomeAffection<DesertBiome>(AffectionLevel.Dislike)
+				.SetBiomeAffection<JungleBiome>(AffectionLevel.Love)
+				.SetNPCAffection(NPCID.Dryad, AffectionLevel.Love)
+				.SetNPCAffection(NPCID.WitchDoctor, AffectionLevel.Like)
+				.SetNPCAffection(NPCID.Pirate, AffectionLevel.Dislike)
+			;
 		}
 
 		public override void SetDefaults()
 		{
-			npc.townNPC = true;
-			npc.friendly = true;
-			npc.width = 18;
-			npc.height = 40;
-			npc.aiStyle = 7;
-			npc.damage = 10;
-			npc.defense = 15;
-			npc.lifeMax = 250;
-			npc.HitSound = SoundID.NPCHit1;
-			npc.DeathSound = SoundID.NPCDeath1;
-			npc.knockBackResist = 0.5f;
-			animationType = NPCID.Guide;
+			NPC.townNPC = true;
+			NPC.friendly = true;
+			NPC.width = 18;
+			NPC.height = 40;
+			NPC.aiStyle = 7;
+			NPC.damage = 10;
+			NPC.defense = 15;
+			NPC.lifeMax = 250;
+			NPC.HitSound = SoundID.NPCHit1;
+			NPC.DeathSound = SoundID.NPCDeath1;
+			NPC.knockBackResist = 0.5f;
+			AnimationType = NPCID.Guide;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Jungle,
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
+
+				new FlavorTextBestiaryInfoElement(Language.GetTextValue("Mods.HerbalistNPC.Bestiary.Herbalist")),
+			});
 		}
 
 		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
@@ -63,17 +88,33 @@ namespace HerbalistNPC
 			return false;
 		}
 
-		public override string TownNPCName()
+		public override ITownNPCProfile TownNPCProfile()
 		{
-			string[] names = { "Zdisek", "Miroslav", "Krzesimir", "Belos", "Milo", "Luborek", "Stanek", "Vacek", "Dragutin", "Stanimir", "Vojmil" };
-			return names[WorldGen.genRand.Next(names.Length)];
+			return new HerbalistProfile();
+		}
+
+		public override List<string> SetNPCNameList()
+		{
+			return new List<string>() { 
+				"Zdisek",
+				"Miroslav",
+				"Krzesimir",
+				"Belos",
+				"Milo",
+				"Luborek",
+				"Stanek",
+				"Vacek",
+				"Dragutin",
+				"Stanimir",
+				"Vojmil"
+			};
 		}
 
 		public override string GetChat()
 		{
 			WeightedRandom<string> chat = new WeightedRandom<string>();
 			int pirate = NPC.FindFirstNPC(NPCID.Pirate);
-			//int zoologist = NPC.FindFirstNPC(NPCID.Zoologist);
+			int zoologist = NPC.FindFirstNPC(NPCID.BestiaryGirl);
 			int dryad = NPC.FindFirstNPC(NPCID.Dryad);
 			int demolitionist = NPC.FindFirstNPC(NPCID.Demolitionist);
 			int wizard = NPC.FindFirstNPC(NPCID.Wizard);
@@ -81,47 +122,47 @@ namespace HerbalistNPC
 
 			if (pirate >= 0)
 			{
-				chat.Add($"Do not give any Blinkroot to {Main.npc[pirate].GivenName}, he uses it to make this awful drink...");
+				chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.PirateDialogue", Main.npc[pirate].GivenName));
 			}
-            //if (zoologist >= 0)
-            //{
-            //    chat.Add($"I found a correlation between blooming of the Deathweed and {Main.npc[zoologist].GivenName}'s transformations.");
-            //}
-			if (dryad >= 0)
+            if (zoologist >= 0)
             {
-				chat.Add($"Maybe a Deathweed wasn't the best gift for {Main.npc[dryad].GivenName}...");
+                chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.ZoologistDialogue", Main.npc[zoologist].GivenName));
+            }
+            if (dryad >= 0)
+            {
+				chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.DryadDialogue", Main.npc[dryad].GivenName));
 			}
 			if (demolitionist >= 0)
 			{
-				chat.Add($"{Main.npc[demolitionist].GivenName} told me he had used my precious Fireblossom to make a bomb! What a waste!");
+				chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.DemolitionistDialogue", Main.npc[demolitionist].GivenName));
 			}
 			if (wizard >= 0)
 			{
-				chat.Add($"So I showed {Main.npc[wizard].GivenName} a Moonglow and he said that it is full of magic potential. Whatever that means.");
+				chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.WizardDialogue", Main.npc[wizard].GivenName));
 			}
 			if (angler >= 0)
 			{
-				chat.Add($"It seems to me that {Main.npc[angler].GivenName} is allergic to Waterleafs...");
+				chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.AnglerDialogue", Main.npc[angler].GivenName));
 			}
-			chat.Add("Yesterday I found this cave full of Blinkroot... Nevermind, it's empty now.", 0.3);
-			chat.Add("Did you know that Blinkroot grows fastest in total darkness?");
-			chat.Add("Dayblooms are so cute, even monsters want to collect them!");
-			chat.Add("Did you know that Dayblooms grow during the daytime? Fascinating!");
-			chat.Add("Deathweed blooms during a Blood Moon or a Full Moon at night.");
-			chat.Add("Don't even try to eat Deathweed. The name tells why.", 0.1);
-			chat.Add("Fireblossoms will bloom when the sun is setting, unless it is raining.");
-			chat.Add("Did you know that Fireblossoms are immune to lava? Fascinating!");
-			chat.Add("How to find a blooming Fireblossom? It will shoot a stream of sparks into the air.");
-			chat.Add("Did you know that Moonglow only blooms at night? Fascinating!");
-			chat.Add("No, that's not a Snowdrop, it's a Moonglow.");
-			chat.Add("Did you know that Shiverthorn grows naturally on snow and ice? Fascinating!");
-			chat.Add("Last night I had a dream about leaving this place and starting a Shiverthorn farm somewhere cold.", 0.2);
-			chat.Add("The Shiverthorn will usually bloom after... some time.");
-			chat.Add("Did you know that Waterleaf grows on sand? Not really fascinating.");
-			chat.Add("Waterleafs somehow know when the water is falling from the sky.", 0.4);
-			chat.Add("Waterleaf will never spawn naturally in the Ocean biome.");
-			chat.Add("Be patient. The Waterleaf takes the longest to bloom out of all the herbs.");
-			return chat.Get();
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.BlinkrootDialogue1"), 0.3);
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.BlinkrootDialogue2"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.DaybloomDialogue1"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.DaybloomDialogue2"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.DeathweedDialogue1"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.DeathweedDialogue2"), 0.1);
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.FireblossomDialogue1"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.FireblossomDialogue2"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.FireblossomDialogue3"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.MoonglowDialogue1"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.MoonglowDialogue2"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.ShiverthornDialogue1"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.ShiverthornDialogue2"), 0.2);
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.ShiverthornDialogue3"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.WaterleafDialogue1"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.WaterleafDialogue2"), 0.4);
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.WaterleafDialogue3"));
+			chat.Add(Language.GetTextValue("Mods.HerbalistNPC.Dialogue.Herbalist.WaterleafDialogue4"));
+			return chat;
 		}
 
 		public override void SetChatButtons(ref string button, ref string button2)
@@ -224,5 +265,24 @@ namespace HerbalistNPC
 			multiplier = 12f;
 			randomOffset = 2f;
 		}
+	}
+
+	public class HerbalistProfile : ITownNPCProfile
+	{
+		public int RollVariation() => 0;
+		public string GetNameForVariant(NPC npc) => npc.getNewNPCName();
+
+		public Asset<Texture2D> GetTextureNPCShouldUse(NPC npc)
+		{
+			if (npc.IsABestiaryIconDummy && !npc.ForcePartyHatOn)
+				return ModContent.Request<Texture2D>("HerbalistNPC/Herbalist");
+
+			if (npc.altTexture == 1)
+				return ModContent.Request<Texture2D>("HerbalistNPC/Herbalist");
+
+			return ModContent.Request<Texture2D>("HerbalistNPC/Herbalist");
+		}
+
+		public int GetHeadTextureIndex(NPC npc) => ModContent.GetModHeadSlot("HerbalistNPC/Herbalist_Head");
 	}
 }
