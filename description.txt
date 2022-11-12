@@ -2,4 +2,6 @@ Herbalist NPC adds an NPC that sells all herbs with their corresponding seeds an
 
 NPC spawns after KIng Slime has been defeated.
 
+New: Added a configurable shop price mulitplier. Default prices are now 2x higher.
+
 Credits to Jungliana for the sprite and dialogues.

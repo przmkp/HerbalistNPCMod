@@ -20,6 +20,10 @@ namespace HerbalistNPC
 	[AutoloadHead]
 	public class Herbalist : ModNPC
 	{
+		public float GetShopPriceMultiplier() {
+			return ModContent.GetInstance<Config>().ShopMultiplier;
+		}
+
 		public override void SetStaticDefaults()
 		{
 			Main.npcFrameCount[NPC.type] = 25;
@@ -180,59 +184,46 @@ namespace HerbalistNPC
 
 		public override void SetupShop(Chest shop, ref int nextSlot)
 		{
-			shop.item[nextSlot].SetDefaults(ItemID.Acorn);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.Daybloom);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.DaybloomSeeds);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.Blinkroot);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.BlinkrootSeeds);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.Deathweed);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.DeathweedSeeds);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.Shiverthorn);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.ShiverthornSeeds);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.Moonglow);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.MoonglowSeeds);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.Waterleaf);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.WaterleafSeeds);
-			nextSlot++;
+			var items = new List<int> {
+				ItemID.Acorn,
+				ItemID.Daybloom,
+				ItemID.DaybloomSeeds,
+				ItemID.Blinkroot,
+				ItemID.BlinkrootSeeds,
+				ItemID.Deathweed,
+				ItemID.DeathweedSeeds,
+				ItemID.Shiverthorn,
+				ItemID.ShiverthornSeeds,
+				ItemID.Moonglow,
+				ItemID.MoonglowSeeds,
+				ItemID.Waterleaf,
+				ItemID.WaterleafSeeds,
+			};
+			
 			if (NPC.downedBoss2)
 			{
-				shop.item[nextSlot].SetDefaults(ItemID.Fireblossom);
-				nextSlot++;
-				shop.item[nextSlot].SetDefaults(ItemID.FireblossomSeeds);
-				nextSlot++;
+				items.Add(ItemID.Fireblossom);
+				items.Add(ItemID.FireblossomSeeds);
 			}
-			shop.item[nextSlot].SetDefaults(ItemID.ViciousMushroom);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.VileMushroom);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.Mushroom);
-			nextSlot++;
-			shop.item[nextSlot].SetDefaults(ItemID.GlowingMushroom);
-			nextSlot++;
+			items.Add(ItemID.ViciousMushroom);
+			items.Add(ItemID.VileMushroom);
+			items.Add(ItemID.Mushroom);
+			items.Add(ItemID.GlowingMushroom);
 			if (NPC.downedBoss1)
             {
-				shop.item[nextSlot].SetDefaults(ItemID.CorruptSeeds);
-				nextSlot++;
-				shop.item[nextSlot].SetDefaults(ItemID.CrimsonSeeds);
-				nextSlot++;
-				shop.item[nextSlot].SetDefaults(ItemID.MushroomGrassSeeds);
-				nextSlot++;
+				items.Add(ItemID.CorruptSeeds);
+				items.Add(ItemID.CrimsonSeeds);
+				items.Add(ItemID.MushroomGrassSeeds);
 			}
 			if (Main.hardMode)
             {
-				shop.item[nextSlot].SetDefaults(ItemID.HallowedSeeds);
+				items.Add(ItemID.HallowedSeeds);
+			}
+
+			foreach (var item in items)
+			{
+				shop.item[nextSlot].SetDefaults(item);
+				shop.item[nextSlot].shopCustomPrice = (int)(shop.item[nextSlot].value * GetShopPriceMultiplier());
 				nextSlot++;
 			}
 		}
